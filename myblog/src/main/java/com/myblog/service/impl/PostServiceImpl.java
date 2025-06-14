@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +24,8 @@ import com.myblog.service.PostService;
 @Service
 public class PostServiceImpl implements PostService {
 	private PostRepository postRepository;
+	@Autowired
+	private ModelMapper mapper;
 	
 	public PostServiceImpl(PostRepository postRepository) {
 		this.postRepository=postRepository;
@@ -92,20 +96,20 @@ public class PostServiceImpl implements PostService {
 
 	//map dto to Post
 	private Post mapToEntity(PostDto postDto) {
-		Post post =new Post();
-		post.setTitle(postDto.getTitle());
-		post.setContent(postDto.getContent());
-		post.setDescription(postDto.getDescription());
+		Post post =mapper.map(postDto, Post.class);
+//		post.setTitle(postDto.getTitle());
+//		post.setContent(postDto.getContent());
+//		post.setDescription(postDto.getDescription());
 		return post;
 	}
 	
 	//map postDto to post
 	private PostDto mapToDto(Post newPost) {
-		PostDto postResponse=new PostDto();
-		 postResponse.setId(newPost.getId());
-		 postResponse.setTitle(newPost.getTitle());
-		 postResponse.setContent(newPost.getContent());
-		 postResponse.setDescription(newPost.getDescription());
+		PostDto postResponse=mapper.map(newPost, PostDto.class);
+//		 postResponse.setId(newPost.getId());
+//		 postResponse.setTitle(newPost.getTitle());
+//		 postResponse.setContent(newPost.getContent());
+//		 postResponse.setDescription(newPost.getDescription());
 		 return postResponse;
 	}
 	@SuppressWarnings("deprecation")

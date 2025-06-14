@@ -5,9 +5,11 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,6 +22,8 @@ import com.myblog.repository.CommentRepo;
 import com.myblog.service.CommentService;
 import com.myblog.util.AppConstants;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/")
 public class CommentController {
@@ -27,7 +31,7 @@ public class CommentController {
 	CommentService commentService;
 	
 	@PostMapping("/post/{postId}/comments")
-	public ResponseEntity<CommentDto> createComment(@PathVariable(name="postId") long id,@RequestBody CommentDto dto){
+	public ResponseEntity<CommentDto> createComment(@Valid @PathVariable(name="postId") long id,@RequestBody CommentDto dto){
 		return ResponseEntity.status(HttpStatus.CREATED).body(commentService.createComment(id, dto));
 	}
 	@GetMapping("/post/comments")
@@ -41,7 +45,20 @@ public class CommentController {
 	}	
 	
 	@GetMapping("/post/{postId}/comments")
-	public ResponseEntity<List<CommentDto>> getCommentByID(@PathVariable long postId){
+	public ResponseEntity<List<CommentDto>> getCommentByPostId(@PathVariable long postId){
 		return ResponseEntity.status(HttpStatus.OK).body(commentService.getCommentByPostId(postId));
+	}
+	@GetMapping("post/{postId}/comments/{commentId}")
+	public ResponseEntity<?> getCommentById(@PathVariable long postId, @PathVariable long commentId){
+		return ResponseEntity.status(HttpStatus.OK).body(commentService.getCommentById(postId,commentId));
+	}
+	@PutMapping("post/{postId}/comments/{commentId}")
+	public ResponseEntity<?>updateComment(@Valid @PathVariable long postId,@PathVariable long commentId, @RequestBody CommentDto dto){
+		return ResponseEntity.status(HttpStatus.OK).body(commentService.updateComment(postId,commentId,dto));
+	}
+	
+	@DeleteMapping("post/{postId}/comments/{commentId}")
+	public ResponseEntity<?>deleteComment(@PathVariable long postId,@PathVariable long commentId){
+		return ResponseEntity.status(HttpStatus.OK).body(commentService.deleteComment(postId,commentId));
 	}
 }

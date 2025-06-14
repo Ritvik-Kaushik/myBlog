@@ -2,6 +2,7 @@ package com.myblog.controller;
 
 import java.util.List;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -14,14 +15,14 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.myblog.entity.Post;
 import com.myblog.payload.PostDto;
 import com.myblog.payload.PostResponse;
 import com.myblog.service.PostService;
 import com.myblog.util.AppConstants;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/posts")
@@ -30,7 +31,7 @@ public class PostController {
 	private PostService postService;
 	
 	@PostMapping()
-	public ResponseEntity<PostDto> createPost(@RequestBody PostDto postDto){
+	public ResponseEntity<PostDto> createPost(@Valid @RequestBody PostDto postDto){
 		
 		
 		
@@ -53,7 +54,7 @@ public class PostController {
 	}
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<PostDto>updatePost(@RequestBody PostDto postDto, @PathVariable(name="id") long id){
+	public ResponseEntity<PostDto>updatePost(@Valid @RequestBody PostDto postDto, @PathVariable(name="id") long id){
 		return ResponseEntity.status(HttpStatus.OK).body(postService.updatePost(postDto,id));
 	}
 	
